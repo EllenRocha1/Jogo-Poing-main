@@ -9,6 +9,43 @@ body {
     font-family: Arial, sans-serif;
 }
 
+
+/* Estilos para o Pop-up */
+#connection-popup {
+    position: fixed; /* Fica por cima de todo o conteúdo */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo preto semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Garante que fica na frente */
+}
+
+#popup-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+#popup-content button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+}
+
+#game-container {
+    visibility: hidden;
+}
+
 #game-container {
     position: relative;
     width: 400px;

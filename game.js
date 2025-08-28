@@ -3,10 +3,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ball = document.getElementById('ball');
     const paddle = document.getElementById('paddle');
     const scoreElement = document.getElementById('score');
+     const gameContainer = document.getElementById('game-container');
+     const connectionPopup = document.getElementById('connection-popup');
+    const connectButton = document.getElementById('connect-button');
+    const errorMessage = document.getElementById('error-message');
     
     // Configurações
     const BALL_SPEED = 4;
-    const PADDLE_SPEED = 10;
+    const PADDLE_SPEED = 25;
     
     // Estado do jogo
     let ballX = 190, ballY = 100;
@@ -19,14 +23,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     ball.style.top = ballY + 'px';
     paddle.style.left = paddleX + 'px';
     
-    // Conexão com Arduino
-    let port;
-    try {
-        port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 });
-        const reader = port.readable.getReader();
-        
-        async function readSerial() {
+    connectButton.addEventListener('click', async () => {
+        errorMessage.textContent = ''; // Limpa mensagens de erro antigas
+        try {
+            const port = await navigator.serial.requestPort();
+            await port.open({ baudRate: 9600 });
+            
+            // --- SUCESSO NA CONEXÃO ---
+            // 1. Esconde o pop-up
+            connectionPopup.style.display = 'none';
+            // 2. Mostra o container do jogo
+            gameContainer.style.visibility = 'visible';
+            // 3. INICIA O JOGO
+            update(); 
+
+            const reader = port.readable.getReader();
+            
+            // Loop para ler os dados do Arduino
             while (true) {
                 const { value, done } = await reader.read();
                 if (done) break;
@@ -40,20 +53,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 paddle.style.left = paddleX + 'px';
             }
+        } catch (err) {
+            console.error("Erro na conexão serial:", err);
+            errorMessage.textContent = "Falha ao conectar. Verifique o Arduino e tente novamente.";
         }
-        
-        readSerial();
-    } catch (err) {
-        console.error("Erro na conexão serial:", err);
-        alert("Falha ao conectar com Arduino. Usando teclado como fallback.");
-        
-        // Fallback para teclado
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') paddleX = Math.max(0, paddleX - PADDLE_SPEED);
-            if (e.key === 'ArrowRight') paddleX = Math.min(320, paddleX + PADDLE_SPEED);
-            paddle.style.left = paddleX + 'px';
-        });
-    }
+    });
+
+
+    // Fallback para teclado (sempre disponível)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') paddleX = Math.max(0, paddleX - PADDLE_SPEED);
+        if (e.key === 'ArrowRight') paddleX = Math.min(320, paddleX + PADDLE_SPEED);
+        paddle.style.left = paddleX + 'px';
+    });
     
     function update() {
         // Move a bola
@@ -85,6 +97,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         requestAnimationFrame(update);
     }
-    
-    update();
 });

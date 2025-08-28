@@ -7,11 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div id="connection-popup">
+        <div id="popup-content">
+            <h1>Jogo Poing com Arduino</h1>
+            <p>Por favor, conecte o seu Arduino para iniciar.</p>
+            <button id="connect-button">Conectar ao Arduino</button>
+            <p id="error-message"></p>
+        </div>
+    </div>
+
     <div id="game-container">
         <div id="ball"></div>
         <div id="paddle"></div>
         <div id="score">Pontuação: 0</div>
     </div>
+
     <script src="game.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5.serialserver@1.0.5/lib/p5.serialport.js"></script>
